@@ -1,0 +1,11 @@
+node_modules
+*.log
+/.idea
+/dist
+/.nyc_output
+/coverage
+/types
+
+# Raw captures of real conversations. Local verification only: they carry the user's own
+# conversation text. The committed test substrate is tests/fixtures/grok/synthetic/.
+/tests/fixtures/grok/live/

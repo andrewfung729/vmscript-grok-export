@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Capital gains tax and revenue - Grok</title>
+  </head>
+  <body>
+    <!--
+      Synthetic fixture. Structure, attributes, and every selector named in docs/PLAN.md §2 are
+      copied from the live DOM measured on 2026-09-29. The prose is placeholder text, and cosmetic
+      utility classes are trimmed. See NOTICE.md beside this file.
+    -->
+    <div data-testid="chat-transcript-scroller">
+      <div class="relative [overflow-x:clip] w-full">
+        <div class="absolute inset-x-0 top-0" style="transform: translateY(0px);"></div>
+
+        <!-- 1: user -->
+        <div class="absolute inset-x-0 top-0 px-gutter" style="transform: translateY(80px);">
+          <div
+            id="response-11111111-1111-4111-8111-111111111111"
+            class="relative group flex flex-col justify-center w-full max-w-(--content-max-width) mx-auto pb-0.5 items-end"
+          >
+            <div
+              dir="auto"
+              role="article"
+              aria-label="You"
+              data-testid="user-message"
+              class="message-bubble relative text-primary min-h-7 chat-md prose prose-chat dark:prose-invert break-words max-w-[100%] px-4 py-2 overflow-x-auto bg-[hsl(var(--wd-user-bubble))] rounded-2xl"
+            >
+              <div class="relative">
+                <div
+                  class="relative response-content-markdown markdown chat-md chat-md-links [&amp;&gt;:first-child:not(.not-prose)]:mt-0"
+                >
+                  <p dir="auto" class="break-words" node="[object Object]" style="white-space: pre-wrap;">Does a higher capital gains tax raise revenue?<br />Assume the rate doubles.</p>
+                </div>
+              </div>
+              <section class="inline-media-container flex flex-col gap-1 clear-both"></section>
+            </div>
+            <div class="order-first hidden @md/mainview:block h-0 opacity-0">
+              <div class="min-h-7 py-4 flex flex-col gap-0.5"></div>
+            </div>
+            <div class="action-buttons h-8 mt-0.5 mb-2 flex flex-row flex-wrap w-full justify-between print:hidden">
+              <button type="button" data-state="closed">Edit</button>
+              <button type="button" data-state="closed">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2: assistant, every shape -->
+        <div class="absolute inset-x-0 top-0 px-gutter" style="transform: translateY(400px);">
+          <div
+            id="response-22222222-2222-4222-8222-222222222222"
+            class="relative group flex flex-col justify-center w-full max-w-(--content-max-width) mx-auto pb-0.5 items-start"
+          >
+            <div
+              dir="auto"
+              role="article"
+              aria-label="Grok"
+              data-testid="assistant-message"
+              class="message-bubble relative rounded-3xl text-primary min-h-7 chat-md prose prose-chat dark:prose-invert break-words w-full max-w-none"
+            >
+              <div class="thinking-container mb-1">
+                <div class="flex flex-col">
+                  <div class="not-prose relative mb-2 text-sm">
+                    <button
+                      type="button"
+                      data-testid="canvas-trigger"
+                      aria-expanded="false"
+                      class="flex flex-row items-center gap-1 text-secondary text-sm leading-6 w-fit pt-3 pb-0 cursor-pointer"
+                    >
+                      <span class="flex min-w-0 items-center gap-1"><span>Worked for 12s</span></span>
+                      <svg width="0.875rem" height="0.875rem" aria-hidden="true"></svg>
+                    </button>
+                  </div>
+                  <div aria-hidden="true"></div>
+                </div>
+              </div>
+              <div class="relative">
+                <div
+                  class="relative response-content-markdown markdown chat-md chat-md-links [&amp;&gt;:first-child:not(.not-prose)]:mt-0"
+                >
+                  <div class="streamdown-chat-md">
+                    <div class="sd:space-y-4 sd:whitespace-normal">
+                      <p dir="auto" class="break-words streamdown-first-block:mt-0" style="white-space: pre-wrap;">It depends on how much realising gains is deferred. Three effects matter:<br />and they pull in different directions.</p>
+                      <h2 dir="auto" class="font-semibold text-2xl mt-[1.5em]">Three effects</h2>
+                      <ul dir="auto" class="marker:text-secondary">
+                        <li class="break-words whitespace-pre-wrap"><strong class="font-semibold">Timing.</strong> Owners choose when to sell.</li>
+                        <li class="break-words whitespace-pre-wrap"><strong class="font-semibold">Lock-in.</strong> Capital stays in the appreciated asset.</li>
+                        <li class="break-words whitespace-pre-wrap"><strong class="font-semibold">Realisation.</strong> Revenue can fall as the rate rises.</li>
+                      </ul>
+                      <h3 dir="auto" class="font-semibold text-xl">What decides the sign</h3>
+                      <p dir="auto" class="break-words" style="white-space: pre-wrap;">The elasticity of realisations is what decides the sign.
+                        <a
+                          href="https://www.cbo.gov/publication/example"
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          class="no-copy ms-1 inline text-nowrap print:hidden rounded-full citation"
+                          data-state="closed"
+                          >⁠CBO</a
+                        ></p>
+                      <p dir="auto" class="break-words" style="white-space: pre-wrap;">The base matters as much as the rate.
+                        <a
+                          href="https://www.nber.org/paper/example"
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          class="no-copy ms-1 inline text-nowrap print:hidden rounded-full citation"
+                          data-state="closed"
+                          >⁠NBER</a
+                        ></p>
+                      <hr class="border-border-l2 clear-both" />
+                      <p dir="auto" class="break-words" style="white-space: pre-wrap;">A four-step check:</p>
+                      <ol dir="auto" class="marker:text-secondary">
+                        <li class="break-words whitespace-pre-wrap">Measure the tax base.</li>
+                        <li class="break-words whitespace-pre-wrap">Estimate the elasticity.</li>
+                      </ol>
+                      <div dir="auto" class="not-prose">
+                        <div class="chat-code-block relative not-prose @container/code-block my-3" data-testid="code-block">
+                          <div class="border border-warm-gray-100 dark:border-neutral-900 rounded-xl">
+                            <div class="group/code-header flex flex-row px-4 py-2 h-10 items-center rounded-t-xl bg-white pr-1 border-b border-warm-gray-100 dark:bg-surface-inset dark:border-neutral-900">
+                              <span class="font-mono text-xs text-secondary select-none">Bash</span>
+                              <div class="ml-auto flex flex-row gap-0 print:hidden">
+                                <button data-slot="button" class="inline-flex items-center justify-center h-8 rounded-xl gap-1 px-2.5" type="button" aria-label="Copy" data-state="closed">
+                                  <div style="width: 16px; height: 16px;"></div>
+                                  <span class="hidden @sm/code-block:inline-grid" data-state="copy" aria-hidden="true">
+                                    <span class="t-copy-label" data-label="copy">Copy</span>
+                                    <span class="t-copy-label" data-label="copied">Copied</span>
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                            <div class="shiki not-prose relative" style="border-radius: 0px 0px 12px 12px; padding: 0px 16px 16px; font-family: var(--font-ibm-plex-mono); display: block; overflow: auto;">
+                              <pre class="shiki slack-dark" tabindex="0" style="background-color: rgb(34, 34, 34); color: rgb(230, 230, 230);"><code><span class="line"><span style="color: rgb(220, 220, 170);">curl</span><span style="color: rgb(206, 145, 120);"> -X POST</span><span style="color: rgb(206, 145, 120);"> https://example.com/api</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: rgb(220, 220, 170);">curl</span><span style="color: rgb(206, 145, 120);"> -X DELETE</span><span style="color: rgb(206, 145, 120);"> https://example.com/api/1</span></span></code></pre>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="overflow-x-auto overflow-y-hidden scroll-feather-x">
+                        <span class="katex-display"
+                          ><span class="katex"
+                            ><span class="katex-mathml"
+                              ><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                                ><semantics
+                                  ><mrow
+                                    ><mtext>revenue</mtext><mo>=</mo><mtext>rate</mtext><mo>×</mo
+                                    ><mtext>base</mtext></mrow
+                                  ><annotation encoding="application/x-tex">\text{revenue} = \text{rate} \times \text{base}</annotation></semantics
+                                ></math
+                              ></span
+                            ><span class="katex-html" aria-hidden="true"
+                              ><span class="base"
+                                ><span class="mord text"><span class="mord">revenue</span></span
+                                ><span class="mrel">=</span
+                                ><span class="mord text"><span class="mord">rate</span></span
+                                ><span class="mbin">×</span
+                                ><span class="mord text"><span class="mord">base</span></span></span
+                              ></span
+                            ></span
+                          ></span
+                        >
+                      </div>
+                      <div class="relative group/table my-2">
+                        <div class="relative w-fit max-w-full">
+                          <div class="relative rounded-[16px] bg-surface-l1 border border-border-l1 overflow-hidden">
+                            <div dir="auto" class="table-container relative clear-both flex flex-row overflow-x-auto no-scrollbar">
+                              <table dir="auto" class="table-card-row-dividers">
+                                <thead class="sticky border-b-0 bg-surface-l1">
+                                  <tr>
+                                    <th data-col-size="lg">Looks like growth</th>
+                                    <th data-col-size="md">What it actually does</th>
+                                  </tr>
+                                </thead>
+                                <tbody data-streamdown="table-body">
+                                  <tr>
+                                    <td data-col-size="lg" style="white-space: pre-wrap;">Revenue up, ROIC below cost of capital</td>
+                                    <td data-col-size="md" style="white-space: pre-wrap;">More capital for a thinner surplus</td>
+                                  </tr>
+                                  <tr>
+                                    <td data-col-size="lg" style="white-space: pre-wrap;">Longer supplier terms</td>
+                                    <td data-col-size="md" style="white-space: pre-wrap;">System inventory unchanged</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="absolute top-full inset-x-0 z-10 overflow-x-auto table-card-scrollbar-hidden">
+                            <div class="table-card-scroll-sizer" style="height: 1px; width: 415px;"></div>
+                          </div>
+                        </div>
+                        <div class="print:hidden mt-2 flex flex-row items-center gap-0.5 opacity-0 group-hover/table:opacity-100">
+                          <button type="button" aria-label="Copy" data-state="closed">
+                            <div style="width: 16px; height: 16px;"></div>
+                          </button>
+                          <button type="button" aria-label="Save table" data-state="closed">
+                            <svg width="16" height="16" aria-hidden="true"></svg>
+                          </button>
+                        </div>
+                      </div>
+                      <p dir="auto" class="break-words" style="white-space: pre-wrap;">And the earlier note still applies.
+                        <a
+                          href="https://www.cbo.gov/publication/example"
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          class="no-copy ms-1 inline text-nowrap print:hidden rounded-full citation"
+                          data-state="closed"
+                          >⁠CBO</a
+                        ></p>
+                    </div>
+                    <span hidden=""></span>
+                  </div>
+                </div>
+              </div>
+              <section class="inline-media-container flex flex-col gap-1 clear-both"></section>
+              <div class="flex gap-2 mt-2 -ms-2 print:hidden">
+                <div class="inline-flex flex-row gap-1 items-center w-fit py-1 ps-1 pe-2 rounded-full cursor-pointer bg-surface-l1" role="button" aria-label="28 sources" data-state="closed">
+                  <img class="size-4 shrink-0 m-0 rounded-full" alt="" role="presentation" src="https://www.google.com/s2/favicons?domain=example.com&amp;sz=256" />
+                  <div class="truncate text-sm">28 sources</div>
+                </div>
+              </div>
+            </div>
+            <div class="order-first hidden @md/mainview:block h-0 opacity-0">
+              <div class="min-h-7 py-4 flex flex-col gap-0.5"></div>
+            </div>
+            <div class="action-buttons h-8 mt-0.5 mb-2 flex flex-row flex-wrap w-full justify-between print:hidden">
+              <button type="button" data-state="closed">Retry</button>
+              <button type="button" data-state="closed">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3: user, single short paragraph -->
+        <div class="absolute inset-x-0 top-0 px-gutter" style="transform: translateY(1420px);">
+          <div
+            id="response-33333333-3333-4333-8333-333333333333"
+            class="relative group flex flex-col justify-center w-full max-w-(--content-max-width) mx-auto pb-0.5 items-end"
+          >
+            <div
+              dir="auto"
+              role="article"
+              aria-label="You"
+              data-testid="user-message"
+              class="message-bubble relative text-primary min-h-7 chat-md prose prose-chat break-words px-4 py-2 rounded-2xl"
+            >
+              <div class="relative">
+                <div class="relative response-content-markdown markdown chat-md chat-md-links">
+                  <p dir="auto" class="break-words" node="[object Object]" style="white-space: pre-wrap;">What if the rate only rose for the top bracket?
+And only above $1m of realised gains?</p>
+                </div>
+              </div>
+              <section class="inline-media-container flex flex-col gap-1 clear-both"></section>
+            </div>
+            <div class="action-buttons h-8 mt-0.5 mb-2 flex flex-row flex-wrap w-full justify-between print:hidden">
+              <button type="button" data-state="closed">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4: assistant, inline math -->
+        <div class="absolute inset-x-0 top-0 px-gutter" style="transform: translateY(1600px);">
+          <div
+            id="response-44444444-4444-4444-8444-444444444444"
+            class="relative group flex flex-col justify-center w-full max-w-(--content-max-width) mx-auto pb-0.5 items-start"
+          >
+            <div
+              dir="auto"
+              role="article"
+              aria-label="Grok"
+              data-testid="assistant-message"
+              class="message-bubble relative rounded-3xl text-primary min-h-7 chat-md prose prose-chat break-words w-full max-w-none"
+            >
+              <div class="thinking-container mb-1">
+                <div class="flex flex-col">
+                  <div class="not-prose relative mb-2 text-sm">
+                    <button type="button" data-testid="canvas-trigger" aria-expanded="false" class="flex flex-row items-center gap-1 w-fit">
+                      <span class="flex min-w-0 items-center gap-1"><span>Worked for 9s</span></span>
+                    </button>
+                  </div>
+                  <div aria-hidden="true"></div>
+                </div>
+              </div>
+              <div class="relative">
+                <div class="relative response-content-markdown markdown chat-md chat-md-links">
+                  <div class="streamdown-chat-md">
+                    <div class="sd:space-y-4 sd:whitespace-normal">
+                      <p dir="auto" class="break-words" style="white-space: pre-wrap;">Then the comparison is <span class="katex"
+                          ><span class="katex-mathml"
+                            ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>I</mi><mi>C</mi><mo>−</mo><mi>W</mi><mi>A</mi><mi>C</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROIC - WACC</annotation></semantics></math></span
+                          ><span class="katex-html" aria-hidden="true"
+                            ><span class="base"
+                              ><span class="mord mathnormal">R</span><span class="mord mathnormal">O</span><span class="mord mathnormal">I</span><span class="mord mathnormal">C</span><span class="mbin">−</span><span class="mord mathnormal">W</span><span class="mord mathnormal">A</span><span class="mord mathnormal">C</span><span class="mord mathnormal">C</span></span
+                            ></span
+                          ></span
+                        > against the bracket you moved.</p>
+                    </div>
+                    <span hidden=""></span>
+                  </div>
+                </div>
+              </div>
+              <section class="inline-media-container flex flex-col gap-1 clear-both"></section>
+            </div>
+            <div class="order-first hidden @md/mainview:block h-0 opacity-0">
+              <div class="min-h-7 py-4 flex flex-col gap-0.5"></div>
+            </div>
+            <div class="action-buttons h-8 mt-0.5 mb-2 flex flex-row flex-wrap w-full justify-between print:hidden">
+              <button type="button" data-state="closed">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute inset-x-0 top-0" style="transform: translateY(1800px);"></div>
+      </div>
+    </div>
+  </body>
+</html>

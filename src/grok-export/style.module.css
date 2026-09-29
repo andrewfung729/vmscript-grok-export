@@ -1,0 +1,22 @@
+/* Preflights are needed for default values of variables */
+@unocss preflights;
+
+.panel {
+  @apply flex flex-col gap-2 p-1 min-w-52;
+}
+
+.title {
+  @apply text-sm font-semibold;
+}
+
+.action {
+  @apply rounded px-3 py-1.5 text-sm font-medium bg-orange-500 text-white cursor-pointer;
+}
+
+.problem {
+  @apply text-sm text-orange-300;
+}
+
+.note {
+  @apply text-xs opacity-70;
+}

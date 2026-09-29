@@ -1,0 +1,84 @@
+/*
+  chats/ 的 [!user] / [!grok]
+  啟用：Settings → Appearance → CSS snippets → chats-callouts
+
+  問題是短句，靠右成氣泡。
+  回答是長文，不上底色，只留一條色線，正文沿用主題字色。
+*/
+
+.callout[data-callout='user'] {
+  --callout-color: #44403c;
+  --callout-icon: lucide-user;
+  --callout-title-color: var(--text-normal);
+  --callout-border-width: 0;
+  --callout-padding: 0.4rem 0.75rem 0.5rem;
+  --callout-radius: 1rem 1rem 0.3rem 1rem;
+
+  width: fit-content;
+  max-width: min(36rem, 82%);
+  margin-inline-start: auto;
+  mix-blend-mode: normal;
+  background-color: color-mix(
+    in oklch,
+    var(--callout-color) 10%,
+    var(--background-primary)
+  );
+}
+
+.callout[data-callout='grok'] {
+  --callout-color: #9a3412;
+  --callout-icon: lucide-bot;
+  --callout-title-color: var(--text-muted);
+  --callout-border-width: 0 0 0 2px;
+  --callout-border-opacity: 0.85;
+  --callout-padding: 0.15rem 0 0.15rem 0.9rem;
+  --callout-radius: 0;
+
+  mix-blend-mode: normal;
+  background-color: transparent;
+}
+
+.theme-dark .callout[data-callout='user'] {
+  --callout-color: #d6d3d1;
+  background-color: color-mix(
+    in oklch,
+    var(--callout-color) 14%,
+    var(--background-primary)
+  );
+}
+
+.theme-dark .callout[data-callout='grok'] {
+  --callout-color: #fbbf24;
+}
+
+.callout[data-callout='user'] .callout-title,
+.callout[data-callout='grok'] .callout-title {
+  font-size: var(--font-ui-smaller);
+  line-height: 1.3;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.callout[data-callout='grok'] > .callout-content {
+  padding-top: 0.2rem;
+}
+
+.callout[data-callout='user'] > .callout-content {
+  color: var(--text-normal);
+}
+
+.callout[data-callout='user'] > .callout-content > :first-child,
+.callout[data-callout='grok'] > .callout-content > :first-child {
+  margin-top: 0.2rem;
+}
+
+.callout[data-callout='user'] > .callout-content > :last-child,
+.callout[data-callout='grok'] > .callout-content > :last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .callout[data-callout='user'] {
+    max-width: 92%;
+  }
+}
