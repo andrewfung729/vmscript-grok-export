@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   buildExport,
   readPageState,
+  readTheme,
+  themeFrom,
   watchPageState,
+  watchTheme,
 } from '../src/grok-export/page';
 import { syntheticDoc } from './fixtures';
 
@@ -161,6 +164,77 @@ describe('watchPageState', () => {
     mountTranscript();
     await settle();
     expect(seen).toEqual([]);
+  });
+});
+
+describe('themeFrom', () => {
+  it('reads a decided scheme', () => {
+    expect(themeFrom('dark', false)).toBe('dark');
+    expect(themeFrom('light', true)).toBe('light');
+  });
+
+  it('leaves an undecided page to the operating system rather than to dark', () => {
+    expect(themeFrom('light dark', true)).toBe('dark');
+    expect(themeFrom('light dark', false)).toBe('light');
+    expect(themeFrom('dark light', false)).toBe('light');
+  });
+
+  it('treats normal and an empty value as light', () => {
+    // jsdom has no `color-scheme`, so the empty string is the case the suite actually runs in.
+    expect(themeFrom('normal', false)).toBe('light');
+    expect(themeFrom('', false)).toBe('light');
+  });
+});
+
+describe('readTheme', () => {
+  const set = (value: string) => {
+    document.documentElement.style.colorScheme = value;
+  };
+
+  it('reads the computed color-scheme off <html>', () => {
+    set('dark');
+    expect(readTheme(window)).toBe('dark');
+    set('light');
+    expect(readTheme(window)).toBe('light');
+  });
+
+  it('follows the operating system when the page hands the choice over', () => {
+    set('light dark');
+    // jsdom has no `matchMedia`, which is also what a browser would report as "not dark".
+    expect(readTheme(window)).toBe('light');
+  });
+});
+
+describe('watchTheme', () => {
+  it('fires when grok rewrites the theme on <html>', async () => {
+    document.documentElement.style.colorScheme = 'dark';
+    const seen: string[] = [];
+    const stop = watchTheme(
+      () => readTheme(window),
+      (theme) => seen.push(theme),
+    );
+
+    document.documentElement.style.colorScheme = 'light';
+    await settle();
+
+    expect(seen).toEqual(['light']);
+    stop();
+  });
+
+  it('ignores a mutation that does not change the theme', async () => {
+    document.documentElement.style.colorScheme = 'dark';
+    const seen: string[] = [];
+    const stop = watchTheme(
+      () => readTheme(window),
+      (theme) => seen.push(theme),
+    );
+
+    // A class grok adds for something else: the observer fires, the theme does not change.
+    document.documentElement.classList.add('scheme-light');
+    await settle();
+
+    expect(seen).toEqual([]);
+    stop();
   });
 });
 

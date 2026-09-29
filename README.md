@@ -9,8 +9,8 @@ file.
 
 ## What it does
 
-Click the panel button on an open conversation and the script writes one `.md` file, with a YAML
-frontmatter header. Each turn is one Obsidian
+Click **Download .md** in the panel on an open conversation and the script writes one `.md` file,
+with a YAML frontmatter header. Each turn is one Obsidian
 [callout](https://help.obsidian.md/callouts) — `[!user]` or `[!grok]` — so a turn reads as a single
 block. Grok's source tags are dropped from the prose and an answer that cites something ends with a
 deduplicated **Sources** list instead.
@@ -55,6 +55,22 @@ messageCount: 4
 The file is named after the conversation title, slugified. If the title slugs to nothing, the
 conversation id is used instead.
 
+### The panel
+
+A small card in the corner of the page, with a status line and one button. It reports how many
+messages the page has mounted, and says so when there is nothing to export yet. A successful export
+is confirmed in the button itself, which reads **Saved** for a moment. The card follows grok's own
+light and dark theme.
+
+- **Clicking the folded pill always opens the card.** On a page that is not a conversation the card
+  folds itself into the pill to stay out of the way, and clicking it opens the card anyway — which
+  then says why it has nothing to export. Folding it yourself with the chevron in its top right
+  behaves the same way.
+- **It stays where you put it.** Drag it by the card and the position is remembered for the next
+  visit. A position that no longer fits the window is pulled back on screen.
+- **Drag the card, never a button**, so a click on a button stays a click. The folded pill is not
+  draggable: open it, move it, fold it again.
+
 ### Turn callouts in Obsidian
 
 `user` and `grok` are not built-in callout types. Obsidian renders an unknown type as `note` — right
@@ -83,7 +99,7 @@ there is one.
 1. Run the build (see [Development](#development)) to produce `dist/grok-export.user.js`.
 2. Open the Violentmonkey dashboard, choose **+** → **Install from file**, and pick that file.
 
-Either way, reload a grok.com conversation tab. A floating panel appears. A copy installed from a
+Either way, reload a grok.com conversation tab and the panel appears. A copy installed from a
 file has no URL to check, so it updates only when a newer file is installed by hand.
 
 ## Limitations

@@ -1,22 +1,182 @@
 /* Preflights are needed for default values of variables */
 @unocss preflights;
 
+/*
+ * `@unocss preflights` publishes the `--un-*` variables and nothing else, and a shadow root has no
+ * page reset behind it. The two defaults a card cannot live with are restored here; both were
+ * measured against the built panel, not assumed.
+ *
+ * `content-box` adds this card's 24px of padding to `w-56` — 248px wide instead of 224px.
+ * `border-style: none` collapses every `border-width` to 0, so the `border` utilities draw nothing.
+ */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+}
+
+/*
+ * Two palettes as tokens on the host, chosen by the `data-theme` attribute `page.ts` reads off the
+ * page. `color-scheme` is set as well, so the panel's own scrollbars and native controls match.
+ *
+ * Every pair below was measured against the surface it sits on — the dark values against this card
+ * composited over a white page, which is their worst case: 4.5:1 or better for text, 3:1 for the
+ * status dots and the focus ring, which are not text. The button keeps grok's orange in both
+ * themes; `slate-900` on `orange-500` is 6.4:1 whatever is behind it.
+ */
+:host {
+  color-scheme: dark;
+  --panel-surface: rgba(15, 23, 42, 0.9);
+  --panel-surface-hover: rgba(30, 41, 59, 0.94);
+  --panel-hover: hsla(0, 0%, 100%, 0.1);
+  --panel-border: hsla(0, 0%, 100%, 0.1);
+  --panel-fg: #f1f5f9;
+  --panel-muted: #94a3b8;
+  --panel-disabled-surface: #334155;
+  --panel-disabled-fg: #cbd5e1;
+  --panel-shadow: rgba(0, 0, 0, 0.5);
+  --panel-ring: #fdba74;
+  --dot-idle: #94a3b8;
+  --dot-busy: #fbbf24;
+  --dot-ready: #34d399;
+}
+
+:host([data-theme='light']) {
+  color-scheme: light;
+  --panel-surface: rgba(255, 255, 255, 0.92);
+  --panel-surface-hover: rgba(248, 250, 252, 0.96);
+  --panel-hover: rgba(15, 23, 42, 0.06);
+  --panel-border: rgba(15, 23, 42, 0.12);
+  --panel-fg: #0f172a;
+  --panel-muted: #475569;
+  --panel-disabled-surface: #e2e8f0;
+  --panel-disabled-fg: #475569;
+  --panel-shadow: rgba(15, 23, 42, 0.18);
+  --panel-ring: #c2410c;
+  --dot-idle: #64748b;
+  --dot-busy: #d97706;
+  --dot-ready: #059669;
+}
+
+/*
+ * The card is grok.com's own visual language — rounded, translucent, blurred — not the built-in
+ * `@violentmonkey/ui` theme, which is a square `rgba(0, 0, 0, .8)` box with a `#333` border whose 8px
+ * of body padding would frame this card. `-m-2` cancels that padding, so the wrapper's box is
+ * exactly this card. See `theme: 'none'` in app.tsx.
+ */
 .panel {
-  @apply flex flex-col gap-2 p-1 min-w-52;
+  @apply -m-2 flex w-56 cursor-grab flex-col gap-2.5 rounded-xl border p-3 backdrop-blur-sm;
+  background-color: var(--panel-surface);
+  border-color: var(--panel-border);
+  color: var(--panel-fg);
+  box-shadow: 0 16px 32px -12px var(--panel-shadow);
+}
+
+/* The status line: one short sentence with a dot that repeats it in colour. It wraps. */
+.status {
+  @apply flex items-start gap-2 text-xs leading-relaxed;
+  color: var(--panel-muted);
+}
+
+/* Nudged down onto the first line of a wrapped sentence. */
+.status .dot {
+  @apply mt-1.5;
+}
+
+/*
+ * The one button. It is larger than anything grok puts in a transcript — measured 32px for grok's
+ * own copy and collapse buttons, 36px for its "Worked for 12s" chip — because it is the only action
+ * the panel has. Still short of the 44px touch guideline: this is a desktop overlay.
+ */
+.action {
+  @apply flex min-h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-orange-500 px-3 py-2 text-sm font-semibold text-slate-900 transition-colors duration-150 hover:bg-orange-400 active:bg-orange-600;
+}
+
+.action:disabled {
+  @apply cursor-not-allowed;
+  background-color: var(--panel-disabled-surface);
+  color: var(--panel-disabled-fg);
+}
+
+.header {
+  @apply flex items-center justify-between gap-2;
 }
 
 .title {
   @apply text-sm font-semibold;
 }
 
-.action {
-  @apply rounded px-3 py-1.5 text-sm font-medium bg-orange-500 text-white cursor-pointer;
+/*
+ * `bg-transparent` is not decoration: a bare `<button>` in a shadow root keeps the UA's `buttonface`
+ * background, and `@unocss preflights` does not reset it. It is almost invisible on the dark card and
+ * a grey slab on the light one — the same bug twice, and the second time only a screenshot caught it.
+ */
+.iconButton {
+  @apply -mr-1 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md bg-transparent transition-colors duration-150;
+  color: var(--panel-muted);
 }
 
-.problem {
-  @apply text-sm text-orange-300;
+.iconButton:hover {
+  background-color: var(--panel-hover);
+  color: var(--panel-fg);
 }
 
-.note {
-  @apply text-xs opacity-70;
+/*
+ * One focus style for all three controls, and a real outline rather than a ring: an outline is not a
+ * `box-shadow`, so it does not fight the card's shadow, and it survives forced-colors mode.
+ */
+.action:focus-visible,
+.iconButton:focus-visible,
+.chipButton:focus-visible {
+  outline: 2px solid var(--panel-ring);
+  outline-offset: 2px;
+}
+
+.icon {
+  @apply h-4 w-4 shrink-0;
+}
+
+/*
+ * `--dot-idle` is the quiet default — the two states with nothing to do are the same grey. A dot is
+ * decoration beside the sentence that says the same thing.
+ */
+.dot {
+  @apply h-2 w-2 shrink-0 rounded-full;
+  background-color: var(--dot-idle);
+}
+
+.dotBusy {
+  @apply motion-safe:animate-pulse;
+  background-color: var(--dot-busy);
+}
+
+.dotReady {
+  background-color: var(--dot-ready);
+}
+
+/*
+ * The folded panel. The same pill is a button on a conversation and inert text elsewhere, so the
+ * interactive half lives in its own class.
+ */
+.chip {
+  @apply -m-2 flex items-center gap-2 rounded-full border py-2.5 pr-3.5 pl-3 text-xs font-medium backdrop-blur-sm;
+  background-color: var(--panel-surface);
+  border-color: var(--panel-border);
+  color: var(--panel-fg);
+  box-shadow: 0 8px 20px -8px var(--panel-shadow);
+}
+
+.chipButton {
+  @apply cursor-pointer transition-colors duration-150;
+}
+
+.chipButton:hover {
+  background-color: var(--panel-surface-hover);
+}
+
+/* The status line for a screen reader only; the count changes too often to announce it. */
+.srOnly {
+  @apply sr-only;
 }

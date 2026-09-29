@@ -6,7 +6,7 @@
 // @noframes
 // @run-at      document-idle
 // @grant       GM_addStyle
-// @version     0.1.0
+// @version     0.2.0
 // @author      process.env.AUTHOR
 // @downloadURL https://github.com/andrewfung729/vmscript-grok-export/releases/latest/download/grok-export.user.js
 // @updateURL   https://github.com/andrewfung729/vmscript-grok-export/releases/latest/download/grok-export.user.js

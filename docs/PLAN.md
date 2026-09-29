@@ -8,9 +8,11 @@ looks like — is defined by [README.md](../README.md) and is not restated here.
 the *rationale* behind those choices, the *evidence* about grok.com, and the *order* of work.
 Working conventions live in [AGENTS.md](../AGENTS.md).
 
-Status: the exporter is done and confirmed by hand — an installed copy has exported a real
-conversation, `pnpm build` writes `dist/grok-export.user.js`, and `pnpm test` runs against the
-synthetic fixture and the live captures. §6 lists what is still open.
+Status: the exporter and the panel are done and confirmed by hand — an installed copy has exported a
+real conversation, and an installed copy of the panel has been folded and reopened from its pill on a
+real conversation. `pnpm build` writes `dist/grok-export.user.js`, and `pnpm test` runs against the
+synthetic fixture and the live captures. What each check covered, and what it did not, is §5. §6 lists
+what is still open.
 
 **The selector contract lives in
 [`src/grok-export/dom/selectors.ts`](../src/grok-export/dom/selectors.ts).** This document owns the
@@ -102,12 +104,51 @@ keep.
 
 Cost: one runtime dependency, and its defaults have to be overridden where §2.6 says so.
 
-### D6 — The template panel, with one button
+### D6 — The template panel, with one button, two states, and a memory
 
-The template already ships a Solid panel via `@violentmonkey/ui`. v1 reuses that shell and adds a
-download button. A citation toggle, a message count, scroll progress, a Markdown preview, and a
-clipboard copy are not part of v1; each one is UI for a behavior the download already covers or
-that v1 does not do.
+The template already ships a Solid panel via `@violentmonkey/ui`. The script reuses that shell: one
+card, styled in `style.module.css`, holding a status line and the download button. A citation toggle,
+scroll progress, a Markdown preview, and a clipboard copy are still out; each is UI for a behavior
+the download already covers or that v1 does not do.
+
+What the panel does beyond v1's one button, and what each thing costs:
+
+- **It folds to a chip, and folds itself wherever there is nothing to export.** On any page that is not
+  a `/c/` page the card is replaced by a small pill. The fold is remembered; the *reason* it is folded
+  is not, because a page state is not a user choice.
+- **Nothing may refuse to open the panel.** A folded panel is the only control on screen, so a click on
+  the pill always opens the card, on every page — the card then says why it has nothing to export and
+  its button is disabled. This cost a decision. An earlier version made the pill *inert* where there was
+  nothing to export, and told drag from click with a 4px slop heuristic on the pill itself; both reached
+  a user as the same report — fold the panel and it cannot be opened again. A guard on the only way out
+  of a state is a trap, not a heuristic: the heuristic and the inert pill are both gone, and the rule is
+  now one line with no condition that can refuse. Related: no control starts a drag (`on:mousedown`
+  stops the event), so a folded panel is opened and then moved, rather than dragged and *also* clicked.
+- **It follows grok's theme.** Two palettes, as CSS custom properties on the panel host (`:host` and
+  `:host([data-theme='light'])` in `style.module.css`), switched by one attribute. The signal is the
+  **computed `color-scheme` of `<html>`** — a property, not a selector, so the selector contract gains
+  nothing and `selectors.ts` is untouched. `watchTheme` re-reads it when `<html>` is rewritten, so a
+  live theme toggle repaints without a reload. Every pair is contrast-checked against the surface it
+  sits on; the values are in the stylesheet beside the reason for each.
+- **It remembers where it was put.** `localStorage`, keyed `grok-export:layout`, written on drag-end and
+  on fold, and clamped to the viewport on the way back in. `localStorage` needs no `@grant`, and the key
+  holds nothing but two numbers and a boolean. A junk value falls back per field rather than throwing:
+  the key lives in grok.com's own storage, where another script can write anything.
+- **The built-in themes are off** (`theme: 'none'`). They are a square `rgba(0, 0, 0, .8)` box with a
+  `#333` border, and their 8px of body padding framed the card. The cost is that every colour is now
+  this repo's to keep accessible; the values were chosen against measured contrast, not taste —
+  `text-slate-900` on `orange-500` is 6.4:1, where the previous `text-white` on `orange-500` was 2.8:1.
+- **One line per state, and a second line for a screen reader.** The visible line carries the mounted
+  count, which changes as the user scrolls; the live region must not, or a scroll would re-announce it.
+  The lines live in `panel-state.ts` and are tested there.
+- **A confirmation in the button, not a toast in the middle of the screen.** `@violentmonkey/ui` centres
+  a toast at 50%/50% of the viewport and dismisses it after 2s. A successful export is confirmed in
+  place — the button becomes `Saved` for 2.5s, and the result is announced through the live region.
+  A *failed* export still uses a toast, because there is no panel state that means "the export failed".
+
+The two controls are 40px and 32px tall rather than the 44px touch guideline. Measured on the dark
+conversation `bed8d430-…`, grok's own transcript controls are smaller still — its Copy and Collapse
+buttons are 32px, its "Worked for 12s" chip 36px — and this is a desktop overlay.
 
 ### D7 — One `.md` download, named from the title
 
@@ -388,6 +429,11 @@ shapes and their evidence live; `tests/fixtures/grok/synthetic/` and the capture
 1. **Human, done 2026-09-29.** Install `dist/grok-export.user.js`, or a release asset, in Violentmonkey,
    open a conversation, and export one. Nothing in CI can do this. What stands in for it as far as it
    can: the release URL, fetched without credentials, returns the built file byte for byte.
+   Done twice that day, and the second time covered the panel: an installed copy folded to its pill and
+   reopened from a click on it, which is the path that had failed before D6 was rewritten. **What that
+   check did not cover**, and what a browser check against the built file did instead: the light palette,
+   dragging, position memory on a reload, and the export confirmation in the button. A check in a browser
+   is a different check from an install on grok.com, which is why the two are listed apart.
 2. **Taking a capture.** A logged-in Chrome session can do it, and the `chrome-devtools` MCP server can
    drive it: `evaluate_script` with `filePath` writes straight into `tests/fixtures/grok/live/`, at no
    context cost. Keep `--workspace=<repo root>` in [`.mcp.json`](../.mcp.json), or the server restricts

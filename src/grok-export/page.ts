@@ -132,6 +132,61 @@ function sameState(a: PageState, b: PageState): boolean {
   return true;
 }
 
+/** The panel's two palettes. The card carries one or the other, never a blend. */
+export type Theme = 'light' | 'dark';
+
+/**
+ * grok states its theme as the **computed `color-scheme` of `<html>`** — a property, not a selector,
+ * so this needs nothing from the selector contract and nothing from the DOM shape.
+ *
+ * Evidence, from the dark conversation `bed8d430-…` measured on 2026-09-29:
+ * `<html class="scheme-light dark:scheme-dark dark" style="color-scheme: dark;">`, whose computed
+ * `color-scheme` is `dark` — the class and the inline style agree, and either could change.
+ */
+export function themeFrom(colorScheme: string, prefersDark: boolean): Theme {
+  const scheme = colorScheme.trim().toLowerCase();
+  // `light dark` hands the choice to the operating system, so the page has not decided and the
+  // browser's own preference has to. `normal` and `light` are both light.
+  if (/\s/.test(scheme)) return prefersDark ? 'dark' : 'light';
+  return scheme.includes('dark') ? 'dark' : 'light';
+}
+
+/** The page's own answer, read from the live document. */
+export function readTheme(view: Window): Theme {
+  const computed = view.getComputedStyle(view.document.documentElement);
+  const prefersDark =
+    typeof view.matchMedia === 'function' &&
+    view.matchMedia('(prefers-color-scheme: dark)').matches;
+  // jsdom has no `color-scheme`, so an empty value is a real case, not a missing one.
+  return themeFrom(computed.colorScheme ?? '', prefersDark);
+}
+
+/**
+ * Call `onChange` when grok's theme changes under a mounted panel. Toggling the theme rewrites
+ * `<html>`, which is outside the subtree `watchPageState` observes, so it needs its own observer —
+ * a cheap one, whose callback re-reads one property instead of re-reading the transcript.
+ */
+export function watchTheme(
+  read: () => Theme,
+  onChange: (theme: Theme) => void,
+  root: Node = document.documentElement,
+): () => void {
+  // The panel has already applied this one, and the observer sees plenty of mutations that are not a
+  // theme change — a class grok adds for something else, a style it rewrites for a layout pass.
+  let previous = read();
+
+  return observe(
+    root,
+    () => {
+      const next = read();
+      if (next === previous) return;
+      previous = next;
+      onChange(next);
+    },
+    { attributes: true, attributeFilter: ['class', 'style'] },
+  );
+}
+
 /** Download via a Blob and an anchor click, so no `@grant` is needed for it. */
 export function downloadMarkdown(payload: ExportPayload): void {
   const blob = new Blob([payload.markdown], {

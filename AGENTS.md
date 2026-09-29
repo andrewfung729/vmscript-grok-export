@@ -16,6 +16,8 @@ One home per fact. Edit the fact in its home; everywhere else, point at it.
 | --- | --- |
 | User-visible behavior, install, usage, exported file format | [README.md](README.md) |
 | Status, decisions and their rationale, risks, verification protocol | [docs/PLAN.md](docs/PLAN.md) |
+| The panel's memory and the lines it reports | `src/grok-export/panel-state.ts` |
+| The panel's two palettes | `:host` blocks in `src/grok-export/style.module.css` |
 | grok.com selector contract | `src/grok-export/dom/selectors.ts` (the evidence behind each entry is in [docs/PLAN.md](docs/PLAN.md) §2) |
 | Obsidian callout styling for the exported turns | `obsidian/snippets/chats-callouts.css` (the vault setting that enables it is `obsidian/appearance.json`) |
 | Build, lint, and test commands | `scripts` in [package.json](package.json) |
@@ -99,6 +101,25 @@ grok.com has rendered the conversation, so reading the page once at mount finds 
   `serialize.ts` drops the tags before the pre-wrap expansion and skips a break whose parent has
   nothing renderable after it.
 
+These are about the panel rather than the parsing, and they are the same kind of bug: silent, and
+wrong in a way that looks like it works.
+
+- **The panel's drag is bound to the wrapper, which is outside the Solid render root.**
+  `@violentmonkey/ui` binds `mousedown` to the wrapper and calls `preventDefault`, cancelling the
+  browser's focus-on-click as well as the drag. Stopping that needs `on:mousedown` on the control, not
+  `onMouseDown`: Solid delegates `onMouseDown` to the render root, which sits *inside* the wrapper, so a
+  delegated handler runs after the drag has already started.
+- **A shadow root has no reset behind it.** `@unocss preflights` publishes the `--un-*` variables and
+  nothing else, so `box-sizing` stays `content-box` (a `w-56` card renders 248px wide once its padding
+  is counted) and `border-style` stays `none` (every `border` utility draws nothing). `style.module.css`
+  declares both itself. Both were found by measuring the built panel in a browser, not by reading the CSS.
+- **A bare `<button>` in a shadow root keeps the UA `buttonface` background.** Preflight does not reset
+  it. On the dark card it is nearly invisible, on the light one it is a grey slab — the same bug shipped
+  twice, and the second time only a screenshot caught it. Every button sets its own background.
+- **The pill that opens a folded panel must never have a condition that can refuse.** A folded panel is
+  the only control on screen, so anything clever there (an inert pill, a drag-versus-click guess) becomes
+  an unrecoverable state. `isFolded` takes an explicit `peek` for this reason, and it is tested.
+
 ## Repo layout
 
 ```
@@ -107,6 +128,7 @@ src/grok-export/
   index.ts            entry: metadata import plus app
   app.tsx             Solid panel mounted through @violentmonkey/ui
   page.ts             page state, the export payload, and the Blob download
+  panel-state.ts      the panel's own memory and copy: position, fold, status lines
   render.ts           frontmatter + body + filename; the document seam
   dom/
     selectors.ts      the grok.com DOM contract; the one home for every selector
@@ -118,6 +140,7 @@ tests/
   serialize.test.ts   the proven quirks, run over every fixture
   render.test.ts      the README output contract: frontmatter, the turn callout and its prefix rule, Sources
   page.test.ts        when the panel may report state, and what it may report
+  panel-state.test.ts where the panel puts itself, and the lines it reports
   fixtures/grok/
     synthetic/        committed; invented prose, real DOM shapes
     live/             gitignored raw captures of real conversations
@@ -135,3 +158,7 @@ rollup.config.mjs     one entry per userscript
 - Keep `@grant` minimal. A Blob download avoids needing a download grant.
 - Selectors degrade gracefully: a missing node shortens the export rather than throwing mid-export.
 - `aria-label` (`You` / `Grok`) on `.message-bubble` is a second role signal behind `data-testid`.
+- Nothing the panel *says* or *remembers* is written in the component. Position, fold, and every status
+  line live in `panel-state.ts` so jsdom can test them without rendering; `app.tsx` only wires them up.
+  Decorative colour never carries meaning alone — the status dot sits beside the sentence that says the
+  same thing.
